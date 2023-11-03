@@ -25,9 +25,7 @@ public class Frame extends JFrame implements KeyListener {
         addKeyListener(this);
 
         restartButton.setFont(new Font("Arial", Font.BOLD, 70));
-        restartButton.addActionListener(e -> {
-            restartGame();
-        });
+        restartButton.addActionListener(e -> restartGame());
 
         initializeGrid();
 
@@ -169,14 +167,16 @@ public class Frame extends JFrame implements KeyListener {
                 if(gs.isApple){
                     gs.setApple(false);
                     snakeParts.add(gs);
+                    gs.setHasSnakeSection(true);
                 }
             }
         }
+        Random r = new Random();
+        int setAppleY, setAppleX;
         while(true){
-            Random r = new Random();
-            int setAppleY = r.nextInt(grid.length - 2) + 1;
-            int setAppleX = r.nextInt(grid.length - 2) + 1;
-            if(!grid[setAppleY][setAppleX].isHasSnakeHead() && !grid[setAppleY][setAppleX].isHasSnakeSection() ){
+            setAppleY = r.nextInt(grid.length - 2) + 1;
+            setAppleX = r.nextInt(grid.length - 2) + 1;
+            if(!grid[setAppleY][setAppleX].isHasSnakeHead() && !snakeParts.contains(grid[setAppleY][setAppleX])){
                 grid[setAppleY][setAppleX].setApple(true);
                 break;
             }
