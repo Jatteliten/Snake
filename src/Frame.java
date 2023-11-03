@@ -7,14 +7,14 @@ import java.util.Random;
 public class Frame extends JFrame implements KeyListener {
     JPanel panel = new JPanel();
     GridSection[][] grid = new GridSection[20][20];
-    int move = 3;
-    int nextMove = 3;
-    int snakeSize = 1;
-    ArrayList<GridSection> snakeParts = new ArrayList<>();
     private static final int UP = 0;
     private static final int DOWN = 1;
     private static final int LEFT = 2;
     private static final int RIGHT = 3;
+    int move = RIGHT;
+    int nextMove = RIGHT;
+    int snakeSize = 1;
+    ArrayList<GridSection> snakeParts = new ArrayList<>();
     JButton restartButton = new JButton("Restart");
     JLabel loseLabel;
 
@@ -158,6 +158,7 @@ public class Frame extends JFrame implements KeyListener {
         snakeParts.clear();
         initializeGrid();
         snakeSize = 1;
+        nextMove = RIGHT;
         play();
     }
 
