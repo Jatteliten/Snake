@@ -15,11 +15,19 @@ public class Frame extends JFrame implements KeyListener {
     private static final int DOWN = 1;
     private static final int LEFT = 2;
     private static final int RIGHT = 3;
+    JButton restartButton = new JButton("Restart");
+    JLabel loseLabel;
+
     Frame(){
         setSize(400,400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         addKeyListener(this);
+
+        restartButton.setFont(new Font("Arial", Font.BOLD, 70));
+        restartButton.addActionListener(e -> {
+            restartGame();
+        });
 
         initializeGrid();
 
@@ -54,6 +62,7 @@ public class Frame extends JFrame implements KeyListener {
 
         panel.setLayout(new GridLayout(20, 20));
         panel.setSize(400,400);
+        requestFocus();
         add(panel);
     }
 
@@ -128,11 +137,28 @@ public class Frame extends JFrame implements KeyListener {
 
     void lose(){
         remove(panel);
-        JLabel losePanel = new JLabel("Points: " + snakeSize);
-        losePanel.setFont(new Font("Arial", Font.BOLD, 60));
-        add(losePanel);
+        loseLabel = new JLabel("Points: " + snakeSize);
+        loseLabel.setFont(new Font("Arial", Font.BOLD, 60));
+        loseLabel.setSize(70, 70);
+        add(loseLabel, BorderLayout.NORTH);
+        add(restartButton, BorderLayout.CENTER);
         revalidate();
         repaint();
+    }
+
+    void restartGame(){
+        remove(restartButton);
+        remove(loseLabel);
+        for(GridSection[] g: grid){
+            for(GridSection gs: g){
+                panel.remove(gs);
+            }
+        }
+        remove(panel);
+        snakeParts.clear();
+        initializeGrid();
+        snakeSize = 1;
+        play();
     }
 
     void moveApple(){
