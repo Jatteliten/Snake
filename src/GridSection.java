@@ -2,60 +2,60 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GridSection extends JPanel {
-    boolean hasSnakeHead;
-    boolean hasSnakeSection;
-    boolean isWall;
-    boolean isApple;
+    boolean snakeHead;
+    boolean snakeBody;
+    boolean wall;
+    boolean apple;
 
     GridSection(){
-        this.hasSnakeHead = false;
-        this.hasSnakeSection = false;
-        this.isWall = false;
-        this.isApple = false;
+        this.snakeHead = false;
+        this.snakeBody = false;
+        this.wall = false;
+        this.apple = false;
     }
 
-    public boolean isHasSnakeHead() {
-        return hasSnakeHead;
+    public boolean isSnakeHead() {
+        return snakeHead;
     }
 
-    public void setHasSnakeHead(boolean hasSnakeHead) {
-        this.hasSnakeHead = hasSnakeHead;
+    public void setSnakeHead(boolean snakeHead) {
+        this.snakeHead = snakeHead;
     }
 
-    public boolean isHasSnakeSection() {
-        return hasSnakeSection;
+    public boolean isSnakeBody() {
+        return snakeBody;
     }
 
-    public void setHasSnakeSection(boolean hasSnakeSection) {
-        this.hasSnakeSection = hasSnakeSection;
+    public void setSnakeBody(boolean snakeBody) {
+        this.snakeBody = snakeBody;
     }
 
     public boolean isWall() {
-        return isWall;
+        return wall;
     }
 
     public void setWall(boolean wall) {
-        isWall = wall;
+        this.wall = wall;
     }
 
     public boolean isApple() {
-        return isApple;
+        return apple;
     }
 
     public void setApple(boolean apple) {
-        isApple = apple;
+        this.apple = apple;
     }
 
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        if(isWall){
+        if(wall){
             g.fillRect(0, 0, getWidth(), getHeight());
-        }else if(isHasSnakeHead()){
+        }else if(isSnakeHead()){
             g.setColor(new Color(9, 100, 11));
             g.fillRect(0,0, getWidth(), getHeight());
-        }else if(isHasSnakeSection()){
+        }else if(isSnakeBody()){
             g.setColor(new Color(42, 138, 44));
             g.fillRect(0,0, getWidth(), getHeight());
         }else if(isApple()){
@@ -63,6 +63,5 @@ public class GridSection extends JPanel {
             g.fillRect(0,0, getWidth(), getHeight());
         }
     }
-
 
 }

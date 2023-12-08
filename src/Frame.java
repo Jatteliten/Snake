@@ -6,20 +6,20 @@ import java.util.Random;
 
 public class Frame extends JFrame implements KeyListener {
     JPanel panel = new JPanel();
-    GridSection[][] grid = new GridSection[20][20];
+    JButton restartButton = new JButton("Restart");
+    JLabel loseLabel;
     private static final int UP = 0;
     private static final int DOWN = 1;
     private static final int LEFT = 2;
     private static final int RIGHT = 3;
-    int move = RIGHT;
-    int nextMove = RIGHT;
-    int snakeSize = 1;
+    private int move = RIGHT;
+    private int nextMove = RIGHT;
+    private int snakeSize = 0;
+    GridSection[][] grid = new GridSection[20][20];
     ArrayList<GridSection> snakeParts = new ArrayList<>();
-    JButton restartButton = new JButton("Restart");
-    JLabel loseLabel;
 
     Frame(){
-        setSize(400,400);
+        setSize(500,500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         addKeyListener(this);
@@ -32,10 +32,14 @@ public class Frame extends JFrame implements KeyListener {
         setVisible(true);
     }
 
+    /**
+     * Sets up the starting grid.
+     * Adds walls, a snake head, body part and an apple
+     */
     private void initializeGrid(){
         Random r = new Random();
-        int startingAppleY = grid.length/2;
-        int startingAppleX = grid.length/2;
+        int startingAppleY = grid.length/2, startingAppleX = grid.length/2;
+
         while(startingAppleY == grid.length/2 && startingAppleX == grid.length/2
             || startingAppleX == 0 || startingAppleX == grid.length - 1
             || startingAppleY == 0 || startingAppleY == grid.length - 1){
@@ -47,8 +51,11 @@ public class Frame extends JFrame implements KeyListener {
                 GridSection tempGrid = new GridSection();
                 if(i == 0 || i == grid.length - 1 || j == 0 || j == grid.length - 1){
                     tempGrid.setWall(true);
+                }else if(i == grid.length/2 && j == grid.length/2 - 1){
+                    tempGrid.setSnakeBody(true);
+                    snakeParts.add(tempGrid);
                 }else if(i == grid.length/2 && j == grid.length/2){
-                    tempGrid.setHasSnakeHead(true);
+                    tempGrid.setSnakeHead(true);
                 }else if(i == startingAppleY && j == startingAppleX){
                     tempGrid.setApple(true);
                 }
@@ -56,25 +63,28 @@ public class Frame extends JFrame implements KeyListener {
                 panel.add(tempGrid);
             }
         }
-
-
-        panel.setLayout(new GridLayout(20, 20));
+        panel.setLayout(new GridLayout(grid.length, grid.length));
         panel.setSize(400,400);
         requestFocus();
         add(panel);
     }
 
-    void play(){
-        Timer t = new Timer(100, new ActionListener() {
-            int snakeHeadY = -1;
-            int snakeHeadX = -1;
+    /**
+     * Play the game.
+     * Head moves based on key presses and the body follows behind.
+     * If the snake head hits a wall or one of its body parts the game is lost and the lose method is called.
+     * If an apple is "eaten" the moveApple method is called.
+     */
+    public void play(){
+        Timer t = new Timer(80, new ActionListener() {
+            int snakeHeadY = -1, snakeHeadX = -1;
             @Override
             public void actionPerformed(ActionEvent e) {
                 move = nextMove;
                 for(int i = 0; i < grid.length; i++){
                     for (int j = 0; j < grid.length; j++){
-                        if(grid[i][j].hasSnakeHead){
-                            grid[i][j].setHasSnakeHead(false);
+                        if(grid[i][j].snakeHead){
+                            grid[i][j].setSnakeHead(false);
                             snakeHeadY = i;
                             snakeHeadX = j;
                             break;
@@ -83,37 +93,13 @@ public class Frame extends JFrame implements KeyListener {
                 }
 
                 if(move == UP) {
-                    if(grid[snakeHeadY - 1][snakeHeadX].isWall || grid[snakeHeadY - 1][snakeHeadX].isHasSnakeSection()){
-                        lose();
-                        ((Timer) e.getSource()).stop();
-                    }else if(grid[snakeHeadY - 1][snakeHeadX].isApple){
-                        moveApple();
-                    }
-                    grid[snakeHeadY - 1][snakeHeadX].setHasSnakeHead(true);
+                    moveSnakeHead(snakeHeadY - 1, snakeHeadX, e);
                 }else if(move == DOWN) {
-                    if(grid[snakeHeadY + 1][snakeHeadX].isWall || grid[snakeHeadY + 1][snakeHeadX].isHasSnakeSection()){
-                        lose();
-                        ((Timer) e.getSource()).stop();
-                    }else if(grid[snakeHeadY + 1][snakeHeadX].isApple){
-                        moveApple();
-                    }
-                    grid[snakeHeadY + 1][snakeHeadX].setHasSnakeHead(true);
+                    moveSnakeHead(snakeHeadY + 1, snakeHeadX, e);
                 }else if(move == LEFT) {
-                    if(grid[snakeHeadY][snakeHeadX - 1].isWall || grid[snakeHeadY][snakeHeadX - 1].isHasSnakeSection()){
-                        lose();
-                        ((Timer) e.getSource()).stop();
-                    }else if(grid[snakeHeadY][snakeHeadX - 1].isApple){
-                        moveApple();
-                    }
-                    grid[snakeHeadY][snakeHeadX - 1].setHasSnakeHead(true);
+                    moveSnakeHead(snakeHeadY, snakeHeadX - 1, e);
                 }else if(move == RIGHT) {
-                    if(grid[snakeHeadY][snakeHeadX + 1].isWall || grid[snakeHeadY][snakeHeadX + 1].isHasSnakeSection()){
-                        lose();
-                        ((Timer) e.getSource()).stop();
-                    }else if(grid[snakeHeadY][snakeHeadX + 1].isApple){
-                        moveApple();
-                    }
-                    grid[snakeHeadY][snakeHeadX + 1].setHasSnakeHead(true);
+                    moveSnakeHead(snakeHeadY, snakeHeadX + 1, e);
                 }
 
                 if(!snakeParts.isEmpty()) {
@@ -121,19 +107,34 @@ public class Frame extends JFrame implements KeyListener {
                     snakeParts.remove(0);
                     for(GridSection[] g: grid){
                         for(GridSection gs: g){
-                            gs.setHasSnakeSection(snakeParts.contains(gs));
+                            gs.setSnakeBody(snakeParts.contains(gs));
                         }
                     }
                 }
                 panel.revalidate();
                 panel.repaint();
             }
+
+            private void moveSnakeHead(int snakeHeadY, int snakeHeadX, ActionEvent e) {
+                if (grid[snakeHeadY][snakeHeadX].isWall() ||
+                        grid[snakeHeadY][snakeHeadX].isSnakeBody()) {
+                    lose();
+                    ((Timer) e.getSource()).stop();
+                } else if (grid[snakeHeadY][snakeHeadX].isApple()) {
+                    moveApple();
+                }
+                grid[snakeHeadY][snakeHeadX].setSnakeHead(true);
+            }
         });
         t.start();
     }
 
-
-    void lose(){
+    /**
+     * Removes the game from the frame.
+     * Displays accumulated score and a restart button.
+     * Pressing the restart button calls the restartGame method.
+     */
+    private void lose(){
         remove(panel);
         loseLabel = new JLabel("Points: " + snakeSize);
         loseLabel.setFont(new Font("Arial", Font.BOLD, 60));
@@ -144,7 +145,11 @@ public class Frame extends JFrame implements KeyListener {
         repaint();
     }
 
-    void restartGame(){
+    /**
+     * Restarts the game in the frame.
+     * Resets points and snake size.
+     */
+    private void restartGame(){
         remove(restartButton);
         remove(loseLabel);
         for(GridSection[] g: grid){
@@ -155,19 +160,23 @@ public class Frame extends JFrame implements KeyListener {
         remove(panel);
         snakeParts.clear();
         initializeGrid();
-        snakeSize = 1;
+        snakeSize = 0;
         nextMove = RIGHT;
         play();
     }
 
-    void moveApple(){
+    /**
+     * Moves the apple if it has been eaten.
+     * Checks if the spawn point is inside the snake head/body and retries if it is.
+     */
+    private void moveApple(){
         snakeSize++;
         for(GridSection[] g: grid){
             for(GridSection gs: g){
-                if(gs.isApple){
+                if(gs.apple){
                     gs.setApple(false);
+                    gs.setSnakeBody(true);
                     snakeParts.add(gs);
-                    gs.setHasSnakeSection(true);
                 }
             }
         }
@@ -176,7 +185,7 @@ public class Frame extends JFrame implements KeyListener {
         while(true){
             setAppleY = r.nextInt(grid.length - 2) + 1;
             setAppleX = r.nextInt(grid.length - 2) + 1;
-            if(!grid[setAppleY][setAppleX].isHasSnakeHead() && !snakeParts.contains(grid[setAppleY][setAppleX])){
+            if(!grid[setAppleY][setAppleX].isSnakeHead() && !grid[setAppleY][setAppleX].isSnakeBody()){
                 grid[setAppleY][setAppleX].setApple(true);
                 break;
             }
@@ -185,30 +194,36 @@ public class Frame extends JFrame implements KeyListener {
 
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(KeyEvent e) {}
 
-    }
-
+    /**
+     * Sets which way the snake moves based on arrow key presses or WASD.
+     * @param e - Keypress
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        switch (keyCode) {
-            case KeyEvent.VK_UP -> {
-                if(move != DOWN) nextMove = UP;
+
+        if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
+            if (move != DOWN) {
+                nextMove = UP;
             }
-            case KeyEvent.VK_DOWN -> {
-                if(move != UP) nextMove = DOWN;
+        } else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
+            if (move != UP) {
+                nextMove = DOWN;
             }
-            case KeyEvent.VK_LEFT -> {
-                if(move != RIGHT) nextMove = LEFT;
+        } else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
+            if (move != RIGHT) {
+                nextMove = LEFT;
             }
-            case KeyEvent.VK_RIGHT -> {
-                if(move != LEFT) nextMove = RIGHT;}
+        } else if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
+            if (move != LEFT) {
+                nextMove = RIGHT;
+            }
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
 
-    }
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }
