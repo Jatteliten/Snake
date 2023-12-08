@@ -37,15 +37,6 @@ public class Frame extends JFrame implements KeyListener {
      * Adds walls, a snake head, body part and an apple
      */
     private void initializeGrid(){
-        Random r = new Random();
-        int startingAppleY = grid.length/2, startingAppleX = grid.length/2;
-
-        while(startingAppleY == grid.length/2 && startingAppleX == grid.length/2
-            || startingAppleX == 0 || startingAppleX == grid.length - 1
-            || startingAppleY == 0 || startingAppleY == grid.length - 1){
-            startingAppleY = r.nextInt(grid.length - 2) + 1;
-            startingAppleX = r.nextInt(grid.length - 2) + 1;
-        }
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid.length; j++){
                 GridSection tempGrid = new GridSection();
@@ -56,13 +47,12 @@ public class Frame extends JFrame implements KeyListener {
                     snakeParts.add(tempGrid);
                 }else if(i == grid.length/2 && j == grid.length/2){
                     tempGrid.setSnakeHead(true);
-                }else if(i == startingAppleY && j == startingAppleX){
-                    tempGrid.setApple(true);
                 }
                 grid[i][j] = tempGrid;
                 panel.add(tempGrid);
             }
         }
+        moveApple();
         panel.setLayout(new GridLayout(grid.length, grid.length));
         panel.setSize(400,400);
         requestFocus();
@@ -122,6 +112,7 @@ public class Frame extends JFrame implements KeyListener {
                     ((Timer) e.getSource()).stop();
                 } else if (grid[snakeHeadY][snakeHeadX].isApple()) {
                     moveApple();
+                    snakeSize++;
                 }
                 grid[snakeHeadY][snakeHeadX].setSnakeHead(true);
             }
@@ -170,7 +161,6 @@ public class Frame extends JFrame implements KeyListener {
      * Checks if the spawn point is inside the snake head/body and retries if it is.
      */
     private void moveApple(){
-        snakeSize++;
         for(GridSection[] g: grid){
             for(GridSection gs: g){
                 if(gs.apple){
