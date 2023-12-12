@@ -15,8 +15,11 @@ public class Frame extends JFrame implements KeyListener {
     private int move = RIGHT;
     private int nextMove = RIGHT;
     private int snakeSize = 0;
-    GridSection[][] grid = new GridSection[20][20];
+    GridSection[][] grid = new GridSection[30][30];
     ArrayList<GridSection> snakeParts = new ArrayList<>();
+    String name;
+    NameEntry nameEntry = new NameEntry();
+    HighScore highScore = new HighScore();
 
     Frame(){
         setSize(500,500);
@@ -24,12 +27,26 @@ public class Frame extends JFrame implements KeyListener {
         setLocationRelativeTo(null);
         addKeyListener(this);
 
+        highScore.getRestart().addActionListener(e -> restartGame());
         restartButton.setFont(new Font("Arial", Font.BOLD, 70));
         restartButton.addActionListener(e -> restartGame());
 
-        initializeGrid();
+        initializeNameEntry();
+        add(nameEntry);
 
         setVisible(true);
+    }
+
+    private void initializeNameEntry(){
+        nameEntry.getStartButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                name = nameEntry.getNameTextField().getText();
+                initializeGrid();
+                play();
+                remove(nameEntry);
+            }
+        });
     }
 
     /**
@@ -126,12 +143,13 @@ public class Frame extends JFrame implements KeyListener {
      * Pressing the restart button calls the restartGame method.
      */
     private void lose(){
+        highScore.writeHighScores(name + ": " + snakeSize);
+        highScore.readHighScores();
         remove(panel);
         loseLabel = new JLabel("Points: " + snakeSize);
         loseLabel.setFont(new Font("Arial", Font.BOLD, 60));
         loseLabel.setSize(70, 70);
-        add(loseLabel, BorderLayout.NORTH);
-        add(restartButton, BorderLayout.CENTER);
+        add(highScore);
         revalidate();
         repaint();
     }
@@ -143,11 +161,7 @@ public class Frame extends JFrame implements KeyListener {
     private void restartGame(){
         remove(restartButton);
         remove(loseLabel);
-        for(GridSection[] g: grid){
-            for(GridSection gs: g){
-                panel.remove(gs);
-            }
-        }
+        panel.removeAll();
         remove(panel);
         snakeParts.clear();
         initializeGrid();
