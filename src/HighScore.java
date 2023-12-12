@@ -1,4 +1,3 @@
-import javax.sql.rowset.serial.SerialJavaObject;
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
