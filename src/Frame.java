@@ -6,8 +6,6 @@ import java.util.Random;
 
 public class Frame extends JFrame implements KeyListener {
     JPanel panel = new JPanel();
-    JButton restartButton = new JButton("Restart");
-    JLabel loseLabel;
     private static final int UP = 0;
     private static final int DOWN = 1;
     private static final int LEFT = 2;
@@ -15,7 +13,7 @@ public class Frame extends JFrame implements KeyListener {
     private int move = RIGHT;
     private int nextMove = RIGHT;
     private int snakeSize = 0;
-    GridSection[][] grid = new GridSection[30][30];
+    GridSection[][] grid = new GridSection[20][20];
     ArrayList<GridSection> snakeParts = new ArrayList<>();
     String name;
     NameEntry nameEntry = new NameEntry();
@@ -28,8 +26,6 @@ public class Frame extends JFrame implements KeyListener {
         addKeyListener(this);
 
         highScore.getRestart().addActionListener(e -> restartGame());
-        restartButton.setFont(new Font("Arial", Font.BOLD, 70));
-        restartButton.addActionListener(e -> restartGame());
 
         initializeNameEntry();
         add(nameEntry);
@@ -38,14 +34,15 @@ public class Frame extends JFrame implements KeyListener {
     }
 
     private void initializeNameEntry(){
-        nameEntry.getStartButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        nameEntry.getStartButton().addActionListener(e -> {
+            if(!nameEntry.getNameTextField().getText().isEmpty()){
                 name = nameEntry.getNameTextField().getText();
-                initializeGrid();
-                play();
-                remove(nameEntry);
+            }else{
+                name = "Guest";
             }
+            initializeGrid();
+            play();
+            remove(nameEntry);
         });
     }
 
@@ -146,9 +143,6 @@ public class Frame extends JFrame implements KeyListener {
         highScore.writeHighScores(name + ": " + snakeSize);
         highScore.readHighScores();
         remove(panel);
-        loseLabel = new JLabel("Points: " + snakeSize);
-        loseLabel.setFont(new Font("Arial", Font.BOLD, 60));
-        loseLabel.setSize(70, 70);
         add(highScore);
         revalidate();
         repaint();
@@ -159,8 +153,6 @@ public class Frame extends JFrame implements KeyListener {
      * Resets points and snake size.
      */
     private void restartGame(){
-        remove(restartButton);
-        remove(loseLabel);
         panel.removeAll();
         remove(panel);
         snakeParts.clear();

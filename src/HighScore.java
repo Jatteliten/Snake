@@ -1,3 +1,4 @@
+import javax.sql.rowset.serial.SerialJavaObject;
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -16,14 +17,8 @@ public class HighScore extends JPanel {
     public HighScore(){
         readHighScores();
         setLayout(new GridLayout(6, 2));
-        for(String s: highScores){
-            JLabel name = new JLabel(s.substring(0, s.lastIndexOf(":")));
-            name.setHorizontalAlignment(SwingConstants.RIGHT);
-            add(name);
-            add(new JLabel(s.substring(s.lastIndexOf(":"))));
-        }
         restart.setFont(new Font("Arial", Font.BOLD, 40));
-        add(restart);
+        generateNewHighScorePanels();
     }
 
     public JButton getRestart() {
@@ -38,8 +33,11 @@ public class HighScore extends JPanel {
         for(String s: highScores){
             JLabel name = new JLabel(s.substring(0, s.lastIndexOf(":")));
             name.setHorizontalAlignment(SwingConstants.RIGHT);
+            name.setFont(new Font("Arial", Font.BOLD, 25));
             add(name);
-            add(new JLabel(s.substring(s.lastIndexOf(":"))));
+            JLabel score = new JLabel((s.substring(s.lastIndexOf(":"))));
+            score.setFont(new Font("Arial", Font.BOLD, 25));
+            add(score);
         }
         add(restart);
     }

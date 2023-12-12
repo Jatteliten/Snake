@@ -46,7 +46,6 @@ public class GridSection extends JPanel {
         this.apple = apple;
     }
 
-
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.WHITE);

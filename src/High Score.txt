@@ -1,5 +1,5 @@
-Daniel: 7
-Daniel: 6
-Daniel: 5
-Sarah: 4
-Daniel: 4
+Guest: 5
+Guest: 4
+Guest: 3
+Guest: 2
+Guest: 1
