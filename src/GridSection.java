@@ -48,7 +48,6 @@ public class GridSection extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.WHITE);
         if(wall){
             g.setColor(Color.BLACK);
         }else if(isSnakeHead()){
@@ -57,6 +56,8 @@ public class GridSection extends JPanel {
             g.setColor(new Color(42, 138, 44));
         }else if(isApple()){
             g.setColor(Color.RED);
+        }else{
+            g.setColor(Color.WHITE);
         }
         g.fillRect(0,0, getWidth(), getHeight());
     }
