@@ -7,11 +7,11 @@ public class GridSection extends JPanel {
     boolean wall;
     boolean apple;
 
-    GridSection(){
-        this.snakeHead = false;
-        this.snakeBody = false;
-        this.wall = false;
-        this.apple = false;
+    GridSection(boolean snakeHead, boolean snakeBody, boolean wall, boolean apple){
+        this.snakeHead = snakeHead;
+        this.snakeBody = snakeBody;
+        this.wall = wall;
+        this.apple = apple;
     }
 
     public boolean isSnakeHead() {
