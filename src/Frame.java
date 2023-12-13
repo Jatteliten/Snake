@@ -25,7 +25,9 @@ public class Frame extends JFrame implements KeyListener {
         setLocationRelativeTo(null);
         addKeyListener(this);
 
-        highScore.getRestart().addActionListener(e -> restartGame());
+        highScore.getRestart().addActionListener(e -> {
+            restartGame();
+        });
 
         initializeNameEntry();
         add(nameEntry);
@@ -41,6 +43,7 @@ public class Frame extends JFrame implements KeyListener {
                 name = "Guest";
             }
             initializeGrid();
+            nextMove = -1;
             play();
             remove(nameEntry);
         });
@@ -158,7 +161,7 @@ public class Frame extends JFrame implements KeyListener {
         snakeParts.clear();
         initializeGrid();
         snakeSize = 0;
-        nextMove = RIGHT;
+        nextMove = -1;
         play();
     }
 
