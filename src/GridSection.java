@@ -34,10 +34,6 @@ public class GridSection extends JPanel {
         return wall;
     }
 
-    public void setWall(boolean wall) {
-        this.wall = wall;
-    }
-
     public boolean isApple() {
         return apple;
     }
