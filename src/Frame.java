@@ -144,7 +144,6 @@ public class Frame extends JFrame implements KeyListener {
      */
     private void lose(){
         highScore.writeHighScores(name + ": " + snakeSize);
-        highScore.readHighScores();
         remove(panel);
         add(highScore);
         revalidate();
@@ -167,7 +166,7 @@ public class Frame extends JFrame implements KeyListener {
 
     /**
      * Moves the apple if it has been eaten.
-     * Checks if the spawn point is inside the snake head/body and retries if it is.
+     * Checks if the spawn point is inside the snake head/body or a wall and retries if it is.
      */
     private void moveApple(){
         for(GridSection[] g: grid){
