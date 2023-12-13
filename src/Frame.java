@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Frame extends JFrame implements KeyListener {
-    JPanel panel = new JPanel();
+    private final JPanel panel = new JPanel();
     private static final int UP = 0;
     private static final int DOWN = 1;
     private static final int LEFT = 2;
@@ -13,12 +13,12 @@ public class Frame extends JFrame implements KeyListener {
     private int move = RIGHT;
     private int nextMove = -1;
     private int snakeSize = 0;
-    GridSection[][] grid = new GridSection[20][20];
-    ArrayList<GridSection> snakeParts = new ArrayList<>();
-    String name;
-    NameEntry nameEntry = new NameEntry();
-    HighScore highScore = new HighScore();
-    GridSectionFactory gridSectionFactory = new GridSectionFactory();
+    private final GridSection[][] grid = new GridSection[20][20];
+    private final ArrayList<GridSection> snakeParts = new ArrayList<>();
+    private String name;
+    private final NameEntry nameEntry = new NameEntry();
+    private final HighScore highScore = new HighScore();
+    private final GridSectionFactory gridSectionFactory = new GridSectionFactory();
 
     Frame(){
         setSize(500,500);
@@ -80,7 +80,7 @@ public class Frame extends JFrame implements KeyListener {
                 move = nextMove;
                 for(int i = 0; i < grid.length; i++){
                     for (int j = 0; j < grid.length; j++){
-                        if(grid[i][j].snakeHead){
+                        if(grid[i][j].isSnakeHead()){
                             grid[i][j].setSnakeHead(false);
                             snakeHeadY = i;
                             snakeHeadX = j;
@@ -161,7 +161,7 @@ public class Frame extends JFrame implements KeyListener {
     private void moveApple(){
         for(GridSection[] g: grid){
             for(GridSection gs: g){
-                if(gs.apple){
+                if(gs.isApple()){
                     gs.setApple(false);
                     gs.setSnakeBody(true);
                     snakeParts.add(gs);

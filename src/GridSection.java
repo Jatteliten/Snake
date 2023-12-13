@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GridSection extends JPanel {
-    boolean snakeHead;
-    boolean snakeBody;
-    boolean wall;
-    boolean apple;
+    private boolean snakeHead;
+    private boolean snakeBody;
+    private boolean wall;
+    private boolean apple;
 
-    GridSection(boolean snakeHead, boolean snakeBody, boolean wall, boolean apple){
+    public GridSection(boolean snakeHead, boolean snakeBody, boolean wall, boolean apple){
         this.snakeHead = snakeHead;
         this.snakeBody = snakeBody;
         this.wall = wall;
