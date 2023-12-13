@@ -4,7 +4,7 @@ import java.awt.*;
 public class GridSection extends JPanel {
     private boolean snakeHead;
     private boolean snakeBody;
-    private boolean wall;
+    private final boolean wall;
     private boolean apple;
 
     public GridSection(boolean snakeHead, boolean snakeBody, boolean wall, boolean apple){
