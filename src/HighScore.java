@@ -20,7 +20,7 @@ public class HighScore extends JPanel {
         generateNewHighScorePanels();
     }
 
-    public JButton getRestart() {
+    public JButton getRestartButton() {
         return restart;
     }
 

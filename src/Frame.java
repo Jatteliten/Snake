@@ -26,7 +26,7 @@ public class Frame extends JFrame implements KeyListener {
         setLocationRelativeTo(null);
         addKeyListener(this);
 
-        highScore.getRestart().addActionListener(e -> restartGame());
+        highScore.getRestartButton().addActionListener(e -> restartGame());
 
         initializeNameEntry();
         add(nameEntry);
