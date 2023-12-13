@@ -18,11 +18,7 @@ public class Frame extends JFrame implements KeyListener {
     String name;
     NameEntry nameEntry = new NameEntry();
     HighScore highScore = new HighScore();
-    private final GridSectionFactory snakeHeadFactory = new SnakeHeadGridSectionFactory();
-    private final GridSectionFactory snakeBodyFactory = new SnakeBodyGridSectionFactory();
-    private final GridSectionFactory appleFactory = new AppleGridSectionFactory();
-    private final GridSectionFactory wallFactory = new WallGridSectionFactory();
-    private final GridSectionFactory defaultFactory = new DefaultGridSectionFactory();
+    GridSectionFactory gridSectionFactory = new GridSectionFactory();
 
     Frame(){
         setSize(500,500);
@@ -58,17 +54,7 @@ public class Frame extends JFrame implements KeyListener {
     private void initializeGrid(){
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid.length; j++){
-                GridSection tempGrid;
-                if(i == 0 || i == grid.length - 1 || j == 0 || j == grid.length - 1){
-                    tempGrid = wallFactory.createGridSection();
-                }else if(i == grid.length/2 && j == grid.length/2 - 1){
-                    tempGrid = snakeBodyFactory.createGridSection();
-                    snakeParts.add(tempGrid);
-                }else if(i == grid.length/2 && j == grid.length/2){
-                    tempGrid = snakeHeadFactory.createGridSection();
-                }else{
-                    tempGrid = defaultFactory.createGridSection();
-                }
+                GridSection tempGrid = gridSectionFactory.getGridSection(i, j, grid.length, snakeParts);
                 grid[i][j] = tempGrid;
                 panel.add(tempGrid);
             }
