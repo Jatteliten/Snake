@@ -169,10 +169,9 @@ public class Frame extends JFrame implements KeyListener {
             }
         }
         Random r = new Random();
-        int setAppleY, setAppleX;
         while(true){
-            setAppleY = r.nextInt(grid.length - 2) + 1;
-            setAppleX = r.nextInt(grid.length - 2) + 1;
+            int setAppleY = r.nextInt(grid.length - 2) + 1;
+            int setAppleX = r.nextInt(grid.length - 2) + 1;
             if(!grid[setAppleY][setAppleX].isSnakeHead() && !grid[setAppleY][setAppleX].isSnakeBody()){
                 grid[setAppleY][setAppleX].setApple(true);
                 break;
